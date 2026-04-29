@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; frame-src https://www.youtube.com; connect-src https://graphql.anilist.co;">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23080810'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='38' font-family='serif'%3E⚔️%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23080810'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='38' font-family='serif'%3E⚔️%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AniRank — Top 30 Animes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080810;--bg2:#0f0f1a;--bg3:#16162a;--surface:#1a1a2e;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --yellow:#e8ff00;--red:#ff2d55;--blue:#00d4ff;
+  --white:#f0f0ff;--grey:#6b6b8a;--grey2:#3a3a5c;--gold:#ffc642;
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;
+  --trans:all .2s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+img{display:block;max-width:100%}
+button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+input,textarea,select{font-family:inherit;color:inherit}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--grey2);border-radius:3px}
+
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:90;display:flex;align-items:center;gap:6px;height:60px;padding:0 24px;background:rgba(8,8,16,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:1px;cursor:pointer;flex-shrink:0}
+.logo-dot{width:9px;height:9px;background:var(--yellow);border-radius:50%;box-shadow:0 0 10px var(--yellow)}
+.ntabs{display:flex;gap:2px;margin-left:12px}
+.ntab{padding:6px 13px;border-radius:var(--r8);font-size:.82rem;font-weight:500;color:var(--grey);transition:var(--trans);white-space:nowrap}
+.ntab:hover{color:var(--white);background:rgba(255,255,255,.06)}
+.ntab.on{color:var(--yellow);background:rgba(232,255,0,.1)}
+.nfav-badge{display:none;margin-left:4px;background:var(--red);color:#fff;font-size:.62rem;font-weight:700;padding:1px 5px;border-radius:10px;vertical-align:middle}
+.nsearch{margin-left:auto;position:relative}
+.nsearch svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--grey);pointer-events:none}
+#si{width:210px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r8);padding:8px 12px 8px 34px;font-size:.83rem;transition:var(--trans)}
+#si:focus{outline:none;border-color:var(--yellow);width:250px;box-shadow:0 0 0 3px rgba(232,255,0,.12)}
+#si::placeholder{color:var(--grey)}
+.hamburger{display:none;font-size:1.4rem;padding:4px;margin-left:auto;color:var(--white)}
+
+/* MOBILE NAV */
+#mobnav{display:none;position:fixed;top:60px;inset-x:0;z-index:89;background:rgba(8,8,16,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px;flex-direction:column;gap:4px}
+#mobnav.open{display:flex}
+#mobnav .ntab{font-size:.95rem;padding:10px 14px}
+
+/* PAGES */
+.page{display:none}
+.page.on{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+main{max-width:1280px;margin:0 auto;padding:28px 24px;width:100%}
+
+/* SECTION */
+.sh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+.st{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+.st::before{content:'';display:inline-block;width:3px;height:20px;background:var(--yellow);border-radius:2px}
+.sl{font-size:.8rem;color:var(--grey);transition:var(--trans);cursor:pointer}
+.sl:hover{color:var(--yellow)}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;border-radius:var(--r16);background:linear-gradient(135deg,#0f0f20 0%,#16102a 60%,#0a1020 100%);border:1px solid var(--border2);padding:36px 40px;margin-bottom:40px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 90% 50%,rgba(232,255,0,.06) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 5% 30%,rgba(255,45,85,.06) 0%,transparent 55%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,6vw,4rem);line-height:.95;letter-spacing:1px;margin-bottom:14px}
+.hero h1 em{color:var(--yellow);font-style:normal}
+.hero p{color:var(--grey);font-size:.92rem;max-width:380px}
+.hstats{display:flex;gap:24px;margin-top:22px}
+.hstat .n{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:1px}
+.hstat .l{font-size:.7rem;color:var(--grey);text-transform:uppercase;letter-spacing:.5px}
+.hero-top3{display:flex;gap:12px;align-items:flex-end;flex-shrink:0}
+.h3card{cursor:pointer;text-align:center;transition:var(--trans)}
+.h3card:hover{transform:translateY(-4px)}
+.h3card img{border-radius:var(--r8);border:2px solid var(--border2);object-fit:cover;background:var(--bg3);transition:var(--trans)}
+.h3card:hover img{border-color:var(--yellow);box-shadow:0 8px 20px rgba(232,255,0,.15)}
+.h3card:nth-child(2) img{width:82px;height:114px;border-color:var(--gold);box-shadow:0 0 18px rgba(255,198,66,.3)}
+.h3card:nth-child(1) img,.h3card:nth-child(3) img{width:64px;height:90px}
+.h3label{font-family:'Bebas Neue',sans-serif;font-size:.78rem;margin-top:5px;color:var(--grey)}
+.h3card:nth-child(2) .h3label{color:var(--gold)}
+
+/* H-SCROLL */
+.hscroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.hcard{flex-shrink:0;width:118px;cursor:pointer;transition:var(--trans)}
+.hcard:hover{transform:translateY(-5px)}
+.hcard img{width:118px;height:166px;object-fit:cover;border-radius:var(--r8);border:2px solid transparent;transition:var(--trans);background:var(--bg3)}
+.hcard:hover img{border-color:var(--yellow);box-shadow:0 6px 20px rgba(232,255,0,.12)}
+.hcard-name{font-size:.74rem;font-weight:600;margin-top:6px;line-height:1.3;text-align:center}
+.hcard-score{font-size:.68rem;color:var(--gold);text-align:center}
+
+/* FILTERS */
+.filters{display:flex;gap:10px;flex-wrap:wrap;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);margin-bottom:24px}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:130px}
+.fg label{font-size:.7rem;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.fg select{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r8);padding:8px 28px 8px 10px;font-size:.82rem;cursor:pointer;transition:var(--trans);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b8a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;color:var(--white)}
+.fg select:focus{outline:none;border-color:var(--yellow)}
+.btn-clr{align-self:flex-end;padding:8px 14px;border:1px solid var(--border2);border-radius:var(--r8);font-size:.8rem;color:var(--grey);transition:var(--trans);white-space:nowrap}
+.btn-clr:hover{border-color:var(--red);color:var(--red)}
+
+/* GRID */
+#rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:11px}
+
+/* CARD */
+.acard{display:flex;gap:13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:13px;transition:var(--trans);cursor:pointer;position:relative;animation:ci .35s ease both}
+.acard:hover{border-color:rgba(232,255,0,.3);background:var(--bg3);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+@keyframes ci{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.acard-pos{min-width:28px;display:flex;align-items:flex-start;justify-content:center;padding-top:3px;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--grey2)}
+.acard-pos.p1{color:var(--gold)}.acard-pos.p2{color:#b0b0c8}.acard-pos.p3{color:#c87040}
+.acard-img-wrap{position:relative;flex-shrink:0;width:70px;height:98px;border-radius:var(--r8);overflow:hidden}
+.acard-img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease;background:var(--bg3)}
+.acard:hover .acard-img{transform:scale(1.07)}
+.acard-ov{position:absolute;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--trans)}
+.acard:hover .acard-ov{opacity:1}
+.btn-view{font-size:.66rem;font-weight:700;background:var(--yellow);color:#000;border-radius:4px;padding:4px 7px;letter-spacing:.3px}
+.acard-body{flex:1;min-width:0}
+.acard-name{font-weight:700;font-size:.93rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acard-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.score-n{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);letter-spacing:.5px}
+.score-bar{flex:1;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.score-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--yellow));transition:width .5s ease}
+.score-v{font-size:.68rem;color:var(--grey)}
+.acard-tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:.67rem;font-weight:600;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--grey);border:1px solid var(--border)}
+.btn-fav{position:absolute;top:10px;right:10px;width:26px;height:26px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;opacity:0;transition:var(--trans)}
+.acard:hover .btn-fav,.btn-fav.on{opacity:1}
+.btn-fav.on{background:rgba(255,45,85,.2);color:var(--red)}
+
+/* SKELETON */
+@keyframes sk{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skb{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:800px 100%;animation:sk 1.4s infinite;border-radius:6px}
+.sk-card{display:flex;gap:13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:13px}
+.sk-pos{width:28px;height:18px}.sk-img{width:70px;height:98px;flex-shrink:0;border-radius:var(--r8)}
+.sk-info{flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.sk-l{height:11px}.sk-l.w80{width:80%}.sk-l.w60{width:60%}.sk-l.w40{width:40%}
+
+/* EMPTY */
+.empty{grid-column:1/-1;text-align:center;padding:5rem 1rem;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--grey)}
+.empty .ei{font-size:3rem}.empty p{font-size:1rem;color:var(--white)}
+.empty button{margin-top:4px;padding:9px 22px;background:var(--yellow);color:#000;border-radius:var(--r8);font-weight:700;font-size:.85rem;transition:var(--trans)}
+.empty button:hover{opacity:.85}
+
+/* MODAL */
+#ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#ov.on{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r16);width:100%;max-width:820px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.8);transform:scale(.96) translateY(8px);transition:transform .25s ease}
+#ov.on .modal{transform:scale(1) translateY(0)}
+.modal-bar{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-bar-t{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.5px;color:var(--grey)}
+.btn-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:var(--trans)}
+.btn-close:hover{background:rgba(255,45,85,.2);color:var(--red)}
+.modal-body{overflow-y:auto;padding:20px;flex:1}
+
+/* MODAL CONTENT */
+.m-hero{display:flex;gap:20px;margin-bottom:22px}
+.m-poster{width:138px;flex-shrink:0;aspect-ratio:2/3;object-fit:cover;border-radius:var(--r12);border:2px solid var(--border2);background:var(--bg3)}
+.m-info{flex:1;min-width:0}
+.m-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.m-badge{font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.3px;border:1px solid var(--border2);color:var(--grey);background:rgba(255,255,255,.04)}
+.m-badge.tr{color:var(--red);border-color:rgba(255,45,85,.35);background:rgba(255,45,85,.08)}
+.m-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.35rem,4vw,1.9rem);line-height:1.05;margin-bottom:9px;letter-spacing:.5px}
+.m-genres{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.m-stats{display:flex;gap:18px;margin-bottom:12px}
+.m-stat .val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--gold);display:block;letter-spacing:.5px}
+.m-stat .lbl{font-size:.68rem;color:var(--grey);text-transform:uppercase;letter-spacing:.4px}
+.m-sep{width:1px;background:var(--border)}
+.m-syn{font-size:.87rem;color:var(--grey);line-height:1.75;margin-bottom:14px}
+.m-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-p{padding:8px 18px;background:var(--yellow);color:#000;border-radius:var(--r8);font-weight:700;font-size:.82rem;transition:var(--trans)}
+.btn-p:hover{opacity:.85}
+.btn-s{padding:8px 18px;border:1px solid var(--border2);border-radius:var(--r8);font-size:.82rem;font-weight:500;color:var(--grey);transition:var(--trans)}
+.btn-s:hover{border-color:var(--white);color:var(--white)}
+.btn-s.on{border-color:var(--red);color:var(--red);background:rgba(255,45,85,.1)}
+.btn-s.on-y{border-color:var(--yellow);color:var(--yellow);background:rgba(232,255,0,.08)}
+
+.m-sec{margin-top:22px}
+.m-sec-t{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--white)}
+.m-sec-t::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.trailer-box{position:relative;padding-top:56.25%;border-radius:var(--r8);overflow:hidden;background:var(--bg3)}
+.trailer-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* STARS */
+.rating-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.stars{display:flex;gap:2px}
+.star{font-size:1.75rem;color:var(--bg3);transition:var(--trans);cursor:pointer;line-height:1;user-select:none}
+.star.lit,.star.hov{color:var(--gold);filter:drop-shadow(0 0 4px rgba(255,198,66,.5));transform:scale(1.12)}
+.rate-lbl{font-size:.83rem;color:var(--grey)}
+
+/* RECS */
+.recs{display:flex;gap:10px;flex-wrap:wrap}
+.rec{width:78px;cursor:pointer;text-align:center;transition:var(--trans)}
+.rec:hover{transform:translateY(-3px)}
+.rec img{width:78px;height:110px;object-fit:cover;border-radius:var(--r8);border:1px solid var(--border);background:var(--bg3)}
+.rec p{font-size:.67rem;font-weight:600;margin-top:4px;line-height:1.3}
+.rec span{font-size:.63rem;color:var(--gold)}
+
+/* COMMENTS */
+.cform{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.cform textarea{width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r8);resize:vertical;min-height:68px;font-size:.84rem;line-height:1.5;transition:var(--trans);color:var(--white)}
+.cform textarea:focus{outline:none;border-color:var(--yellow)}
+.cform textarea::placeholder{color:var(--grey)}
+.cform button{align-self:flex-end;padding:7px 16px;background:var(--yellow);color:#000;border-radius:var(--r8);font-weight:700;font-size:.78rem;transition:var(--trans)}
+.cform button:hover{opacity:.85}
+.clist{display:flex;flex-direction:column;gap:8px}
+.ci{display:flex;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r8)}
+.c-av{width:30px;height:30px;flex-shrink:0;background:linear-gradient(135deg,var(--red),#ff6a00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem}
+.c-h{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.c-h strong{font-size:.82rem}.c-h time{font-size:.68rem;color:var(--grey)}
+.c-t{font-size:.8rem;color:var(--grey);line-height:1.5}
+.no-c{text-align:center;color:var(--grey);padding:1.5rem;font-size:.83rem}
+
+/* FAVS / LIST */
+.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:11px}
+.ep{display:flex;flex-direction:column;align-items:center;padding:5rem 1rem;gap:14px;text-align:center;color:var(--grey)}
+.ep .ei{font-size:3.5rem}.ep p{font-size:1rem;color:var(--white)}.ep small{font-size:.83rem}
+.list-item{display:flex;gap:13px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:12px 14px;transition:var(--trans)}
+.list-item:hover{border-color:rgba(232,255,0,.25)}
+.list-item img{width:44px;height:62px;object-fit:cover;border-radius:var(--r8);cursor:pointer;background:var(--bg3)}
+.li-info{flex:1}.li-info strong{display:block;font-size:.9rem;margin-bottom:2px}.li-info span{font-size:.77rem;color:var(--grey)}
+.li-tags{display:flex;gap:4px;margin-top:4px}
+.btn-rm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--grey);transition:var(--trans)}
+.btn-rm:hover{background:rgba(255,45,85,.15);color:var(--red)}
+
+/* TOAST */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r8);padding:10px 14px;font-size:.82rem;max-width:270px;box-shadow:0 8px 24px rgba(0,0,0,.5);transform:translateX(110%);opacity:0;transition:transform .3s ease,opacity .3s ease}
+.toast.show{transform:translateX(0);opacity:1}
+.toast.ok{border-left:3px solid #22c55e}.toast.warn{border-left:3px solid var(--gold)}.toast.info{border-left:3px solid var(--blue)}
+
+footer{text-align:center;padding:20px;border-top:1px solid var(--border);font-size:.78rem;color:var(--grey);margin-top:auto}
+footer b{color:var(--yellow)}
+
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-top3{display:none}#rank-grid{grid-template-columns:1fr}.fav-grid{grid-template-columns:1fr}}
+@media(max-width:640px){nav{padding:0 14px}.ntabs,.nsearch{display:none}.hamburger{display:flex}main{padding:20px 14px}.hero{padding:24px 20px}.m-hero{flex-direction:column}.m-poster{width:110px}.modal-body{padding:14px}#toasts{right:10px;bottom:10px}.toast{max-width:240px}}
+
+/* ══════════════ CARROSSEL COM SETAS (Netflix/Crunchyroll style) ══════════════ */
+.carousel-wrap{position:relative}
+
+/* Ocultar scrollbar mantendo o scroll funcional */
+.hscroll{scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth}
+.hscroll::-webkit-scrollbar{display:none}
+
+/* Botões de seta */
+.carr-btn{
+  position:absolute;top:0;bottom:8px;z-index:10;
+  width:52px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;color:var(--white);
+  background:transparent;
+  border:none;cursor:pointer;
+  opacity:0;
+  transition:opacity .22s ease,background .22s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.carousel-wrap:hover .carr-btn{opacity:1}
+.carr-btn:hover{background:rgba(8,8,16,.75)}
+.carr-btn.carr-prev{
+  left:0;border-radius:var(--r8) 0 0 var(--r8);
+  background:linear-gradient(to right,rgba(8,8,16,.85) 0%,transparent 100%);
+}
+.carr-btn.carr-next{
+  right:0;border-radius:0 var(--r8) var(--r8) 0;
+  background:linear-gradient(to left,rgba(8,8,16,.85) 0%,transparent 100%);
+}
+.carr-btn.carr-prev:hover{background:linear-gradient(to right,rgba(8,8,16,.95) 0%,rgba(8,8,16,.5) 100%)}
+.carr-btn.carr-next:hover{background:linear-gradient(to left,rgba(8,8,16,.95) 0%,rgba(8,8,16,.5) 100%)}
+
+/* Ícone da seta */
+.carr-btn::after{
+  content:'';display:block;
+  width:12px;height:12px;
+  border-top:2.5px solid var(--white);
+  border-right:2.5px solid var(--white);
+  transition:transform .15s ease;
+}
+.carr-btn.carr-prev::after{transform:rotate(-135deg) translateX(2px)}
+.carr-btn.carr-next::after{transform:rotate(45deg) translateX(-2px)}
+.carr-btn.carr-prev:hover::after{transform:rotate(-135deg) translateX(4px)}
+.carr-btn.carr-next:hover::after{transform:rotate(45deg) translateX(-4px)}
+
+/* Esconder seta quando não há mais conteúdo */
+.carr-btn.hidden{opacity:0!important;pointer-events:none}
+
+/* Hover nos cards: zoom + sombra estilo Netflix */
+.hcard{transition:transform .25s ease,box-shadow .25s ease}
+.hcard:hover{transform:scale(1.08) translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,.7);z-index:5;position:relative}
+.hcard img{transition:all .25s ease}
+
+/* Badge Dublado/Legendado no hcard */
+.dub-badge{
+  display:inline-block;
+  font-size:.58rem;font-weight:700;
+  padding:2px 5px;border-radius:3px;
+  letter-spacing:.3px;
+  margin-top:3px;
+  text-align:center;
+}
+.dub-badge.dub{background:rgba(232,255,0,.15);color:var(--yellow);border:1px solid rgba(232,255,0,.3)}
+.dub-badge.leg{background:rgba(0,212,255,.1);color:var(--blue);border:1px solid rgba(0,212,255,.25)}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<nav>
+  <div class="logo" onclick="go('home')">
+    <div class="logo-dot"></div>ANIRANK
+  </div>
+  <div class="ntabs">
+    <button class="ntab on" data-p="home" onclick="go('home')">Início</button>
+    <button class="ntab" data-p="ranking" onclick="go('ranking')">🏆 Ranking</button>
+    <button class="ntab" data-p="favs" onclick="go('favs')">❤️ Favoritos <span class="nfav-badge" id="fav-cnt"></span></button>
+    <button class="ntab" data-p="mylist" onclick="go('mylist')">📋 Lista</button>
+  </div>
+  <div class="nsearch">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="si" placeholder="Buscar anime…" oninput="onSearch(this.value)" autocomplete="off">
+  </div>
+  <button class="hamburger" onclick="toggleMob()">☰</button>
+</nav>
+
+<div id="mobnav">
+  <button class="ntab" onclick="go('home')">🏠 Início</button>
+  <button class="ntab" onclick="go('ranking')">🏆 Ranking</button>
+  <button class="ntab" onclick="go('favs')">❤️ Favoritos</button>
+  <button class="ntab" onclick="go('mylist')">📋 Minha Lista</button>
+</div>
+
+<main>
+
+  <!-- HOME -->
+  <div id="page-home" class="page on">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <h1>TOP 30<br><em>ANIMES</em></h1>
+          <p>Ranking dinâmico baseado em avaliações reais. Vote, favorite e descubra seus próximos animes.</p>
+          <div class="hstats">
+            <div class="hstat"><div class="n">30</div><div class="l">Animes</div></div>
+            <div class="hstat"><div class="n" id="hs-v">—</div><div class="l">Votos</div></div>
+            <div class="hstat"><div class="n" id="hs-a">—</div><div class="l">Nota Média</div></div>
+          </div>
+        </div>
+        <div class="hero-top3" id="hero-top3"></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:36px">
+      <div class="sh"><div class="st">🔥 TRENDING</div><span class="sl" onclick="go('ranking')">Ver tudo →</span></div>
+      <div class="carousel-wrap">
+        <button class="carr-btn carr-prev" data-row="row-trend" aria-label="Anterior"></button>
+        <div id="row-trend" class="hscroll"></div>
+        <button class="carr-btn carr-next" data-row="row-trend" aria-label="Próximo"></button>
+      </div>
+    </div>
+    <div style="margin-bottom:36px">
+      <div class="sh"><div class="st">👑 MAIS POPULARES</div></div>
+      <div class="carousel-wrap">
+        <button class="carr-btn carr-prev" data-row="row-pop" aria-label="Anterior"></button>
+        <div id="row-pop" class="hscroll"></div>
+        <button class="carr-btn carr-next" data-row="row-pop" aria-label="Próximo"></button>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div class="sh"><div class="st">⭐ MELHOR AVALIADOS</div></div>
+      <div class="carousel-wrap">
+        <button class="carr-btn carr-prev" data-row="row-top" aria-label="Anterior"></button>
+        <div id="row-top" class="hscroll"></div>
+        <button class="carr-btn carr-next" data-row="row-top" aria-label="Próximo"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RANKING -->
+  <div id="page-ranking" class="page">
+    <div class="sh" style="margin-bottom:20px"><div class="st">🏆 RANKING COMPLETO</div></div>
+    <div class="filters">
+      <div class="fg"><label>Gênero</label><select id="fg" onchange="applyF()"><option value="">Todos</option></select></div>
+      <div class="fg"><label>Nota mínima</label>
+        <select id="fs" onchange="applyF()">
+          <option value="0">Qualquer</option><option value="7">7.0+</option>
+          <option value="7.5">7.5+</option><option value="8">8.0+</option>
+          <option value="8.5">8.5+</option><option value="9">9.0+</option>
+        </select>
+      </div>
+      <div class="fg"><label>Ordenar</label>
+        <select id="fo" onchange="applyF()">
+          <option value="rank">Ranking</option><option value="score">Maior nota</option>
+          <option value="votes">Mais votados</option><option value="az">A → Z</option>
+        </select>
+      </div>
+      <button class="btn-clr" onclick="clearF()">↺ Limpar</button>
+    </div>
+    <div id="rank-grid"></div>
+  </div>
+
+  <!-- FAVS -->
+  <div id="page-favs" class="page">
+    <div class="sh" style="margin-bottom:20px"><div class="st">❤️ FAVORITOS</div></div>
+    <div id="favs-c"></div>
+  </div>
+
+  <!-- LIST -->
+  <div id="page-mylist" class="page">
+    <div class="sh" style="margin-bottom:20px"><div class="st">📋 MINHA LISTA</div></div>
+    <div id="list-c" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+</main>
+
+<footer><b>AniRank</b> · Feito com ❤️ para fãs de anime. © 2026. Todos os direitos reservados.</footer>
+</div>
+
+<!-- MODAL -->
+<div id="ov" onclick="closeOv(event)">
+  <div class="modal">
+    <div class="modal-bar">
+      <span class="modal-bar-t">DETALHES DO ANIME</span>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="mb"></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+// ════════════════════════════ DATA ════════════════════════════
+const DB=[
+{id:1,name:"One Piece",img:"https://cdn.myanimelist.net/images/anime/6/73245.jpg",syn:"Monkey D. Luffy parte em busca do lendário tesouro 'One Piece' para se tornar o Rei dos Piratas, reunindo uma tripulação de aliados improváveis ao longo de suas aventuras pelos mares.",score:9.2,votes:4821,genres:["Aventura","Ação","Fantasia"],eps:1100,trailer:"https://www.youtube.com/embed/S8_YwFLCh4U",trending:true,year:1999,dub:"Legendado"},
+{id:2,name:"Shingeki no Kyojin",img:"https://cdn.myanimelist.net/images/anime/10/47347.jpg",syn:"A humanidade vive atrás de muros gigantescos para se proteger dos Titãs. Após uma tragédia, Eren Yeager jura exterminar todos os Titãs e revelar os segredos do mundo.",score:9.1,votes:7234,genres:["Ação","Drama","Horror"],eps:75,trailer:"https://www.youtube.com/embed/MGRm4IzK1SQ",trending:true,year:2013,dub:"Legendado"},
+{id:3,name:"Hunter x Hunter",img:"https://cdn.myanimelist.net/images/anime/11/33657.jpg",syn:"Gon Freecss parte em busca de seu pai desaparecido, um lendário Hunter, fazendo amigos e enfrentando perigos inimagináveis durante a jornada para obter sua licença.",score:9.1,votes:4567,genres:["Ação","Aventura","Fantasia"],eps:148,trailer:"https://www.youtube.com/embed/D9iTQHMIBXc",trending:false,year:2011,dub:"Legendado"},
+{id:4,name:"Death Note",img:"https://cdn.myanimelist.net/images/anime/9/9453.jpg",syn:"Light Yagami encontra um caderno sobrenatural capaz de matar qualquer pessoa cujo nome seja escrito em suas páginas, iniciando um jogo de gato e rato com o detetive L.",score:9.0,votes:6103,genres:["Suspense","Psicológico","Sobrenatural"],eps:37,trailer:"https://www.youtube.com/embed/NlJZ-YgAt-c",trending:false,year:2006,dub:"Legendado"},
+{id:5,name:"Bleach",img:"https://cdn.myanimelist.net/images/anime/3/40451.jpg",syn:"Ichigo Kurosaki obtém os poderes de um Shinigami e assume a responsabilidade de proteger os inocentes de espíritos malignos.",score:8.9,votes:3654,genres:["Ação","Aventura","Sobrenatural"],eps:366,trailer:"https://www.youtube.com/embed/oKph5cMCxCI",trending:false,year:2004,dub:"Legendado"},
+{id:6,name:"Kimetsu no Yaiba",img:"https://cdn.myanimelist.net/images/anime/1286/99889.jpg",syn:"Tanjiro Kamado busca uma cura para sua irmã Nezuko, transformada em demônio, enquanto treina para se tornar um Caçador de Demônios.",score:8.7,votes:5891,genres:["Ação","Fantasia","Drama"],eps:26,trailer:"https://www.youtube.com/embed/VQGCKyvzIM4",trending:true,year:2019,dub:"Legendado"},
+{id:7,name:"Jujutsu Kaisen",img:"https://cdn.myanimelist.net/images/anime/1171/109222.jpg",syn:"Yuji Itadori se torna o recipiente de Ryomen Sukuna e é recrutado por feiticeiros para combater maldições e consumir todos os dedos malditos.",score:8.7,votes:5432,genres:["Ação","Sobrenatural","Escola"],eps:24,trailer:"https://www.youtube.com/embed/pkKu9hLT-t8",trending:true,year:2020,dub:"Legendado"},
+{id:8,name:"Mob Psycho 100",img:"https://cdn.myanimelist.net/images/anime/8/80356.jpg",syn:"Shigeo 'Mob' Kageyama é um jovem com poderes psíquicos imensos que suprime suas emoções para controlar seus poderes.",score:8.7,votes:3102,genres:["Ação","Comédia","Sobrenatural"],eps:12,trailer:"https://www.youtube.com/embed/hzEPj3W-qPk",trending:false,year:2016,dub:"Legendado"},
+{id:9,name:"Vinland Saga",img:"https://cdn.myanimelist.net/images/anime/1500/103005.jpg",syn:"Thorfinn busca vingança contra o mercenário que matou seu pai numa jornada épica pela Europa medieval que o leva a questionar seus valores.",score:8.8,votes:2934,genres:["Ação","Drama","Histórico"],eps:24,trailer:"https://www.youtube.com/embed/ML_alfGj_ms",trending:false,year:2019,dub:"Legendado"},
+{id:10,name:"Solo Leveling",img:"./assets/animes/solo-leveling.webp",malId:52299,syn:"Sung Jinwoo, o caçador mais fraco do mundo, obtém um sistema misterioso que lhe permite evoluir sem limites tornando-se o mais poderoso.",score:8.8,votes:4912,genres:["Ação","Fantasia","Aventura"],eps:13,trailer:"https://www.youtube.com/embed/MWrsQmBIkhM",trending:true,year:2024,dub:"Legendado"},
+{id:11,name:"Samurai X",img:"./assets/animes/samurai-x.jpg",malId:45,syn:"Kenshin Himura, um ex-assassino lendário do período Meiji, agora vaga pelo Japão como protetor tendo jurado nunca mais matar.",score:8.8,votes:3201,genres:["Ação","Drama","Histórico"],eps:95,trailer:"https://www.youtube.com/embed/sbCBiTDTNyI",trending:false,year:1996,dub:"Legendado"},
+{id:12,name:"Naruto",img:"https://cdn.myanimelist.net/images/anime/13/17405.jpg",syn:"Naruto Uzumaki persegue o sonho de se tornar Hokage, o ninja mais poderoso da aldeia, apesar de ser rejeitado por conter uma raposa de nove caudas.",score:8.3,votes:6543,genres:["Ação","Aventura","Comédia"],eps:220,trailer:"https://www.youtube.com/embed/QczGoCmX-pI",trending:false,year:2002,dub:"Dublado"},
+{id:13,name:"Dragon Ball",img:"./assets/animes/dragon-ball.jpg",malId:813,syn:"Goku embarca em busca das lendárias Dragon Balls, conhecendo amigos e enfrentando inimigos poderosos no caminho para se tornar o lutador mais forte.",score:8.5,votes:5200,genres:["Ação","Aventura","Comédia"],eps:153,trailer:"https://www.youtube.com/embed/HjyZVgGuuYU",trending:false,year:1986,dub:"Dublado"},
+{id:14,name:"Haikyuu!!",img:"https://cdn.myanimelist.net/images/anime/7/76014.jpg",syn:"Shoyo Hinata, apesar da baixa estatura, sonha em se tornar um grande jogador de vôlei e se junta ao clube onde encontra seu rival de infância como parceiro.",score:8.6,votes:3891,genres:["Esporte","Drama","Comédia"],eps:25,trailer:"https://www.youtube.com/embed/oGIEzPchsNU",trending:false,year:2014,dub:"Legendado"},
+{id:15,name:"Chainsaw Man",img:"https://cdn.myanimelist.net/images/anime/1806/126216.jpg",syn:"Denji se funde com seu demônio-cachorro e se torna o Homem-Motosserra, sendo recrutado pela agência governamental de caça a demônios.",score:8.5,votes:4876,genres:["Ação","Horror","Sobrenatural"],eps:12,trailer:"https://www.youtube.com/embed/q15ML7-kHJY",trending:true,year:2022,dub:"Legendado"},
+{id:16,name:"No Game No Life",img:"https://cdn.myanimelist.net/images/anime/5/65187.jpg",syn:"Os irmãos Sora e Shiro são transportados para um mundo onde todas as disputas são decididas por jogos e planejam conquistá-lo.",score:8.4,votes:4123,genres:["Aventura","Fantasia","Comédia"],eps:12,trailer:"https://www.youtube.com/embed/GxCGNwrk_HU",trending:false,year:2014,dub:"Legendado"},
+{id:17,name:"Blue Lock",img:"./assets/animes/blue-lock.webp",malId:49596,syn:"300 jovens atacantes competem ferozmente no programa Blue Lock para se tornar o melhor artilheiro egocêntrico do mundo.",score:8.4,votes:3421,genres:["Esporte","Drama","Ação"],eps:24,trailer:"https://www.youtube.com/embed/RezlceK7wiM",trending:true,year:2022,dub:"Legendado"},
+{id:18,name:"Classroom of the Elite",img:"https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx98659-WTR4bNPVVKo0.jpg",malId:35507,syn:"Kiyotaka Ayanokoji esconde um intelecto extraordinário enquanto navega pelas complexas intrigas de uma escola de elite.",score:8.2,votes:2847,genres:["Drama","Psicológico","Escola"],eps:13,trailer:"https://www.youtube.com/embed/F7gdycBQukA",trending:false,year:2017,dub:"Legendado"},
+{id:19,name:"Hell's Paradise",img:"./assets/animes/hells-paradise.jpg",malId:50602,syn:"Gabimaru é enviado a uma ilha maldita em busca do Elixir da Imortalidade como condição para sua liberdade, enfrentando criaturas divinas.",score:8.3,votes:2109,genres:["Ação","Aventura","Sobrenatural"],eps:13,trailer:"https://www.youtube.com/embed/Rh3ZgIGjiRk",trending:false,year:2023,dub:"Legendado"},
+{id:20,name:"Black Clover",img:"https://cdn.myanimelist.net/images/anime/2/88336.jpg",syn:"Asta, nascido sem magia num mundo onde todos a possuem, sonha em se tornar o Rei Mago com determinação infinita.",score:8.1,votes:2890,genres:["Ação","Fantasia","Aventura"],eps:170,trailer:"https://www.youtube.com/embed/eqmkts2JiSU",trending:false,year:2017,dub:"Legendado"},
+{id:21,name:"Dan Da Dan",img:"https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx171018-rJqNkxwXSGCN.jpg",malId:53446,syn:"Momo e Okarun são envolvidos por forças sobrenaturais extraordinárias ao se aventurarem em lugares amaldiçoados para provar suas crenças.",score:8.6,votes:3456,genres:["Ação","Comédia","Sobrenatural"],eps:12,trailer:"https://www.youtube.com/embed/oy-XD_gGbcE",trending:true,year:2024,dub:"Legendado"},
+{id:22,name:"Shokugeki no Soma",img:"./assets/animes/shokugeki-no-soma.jpg",malId:28171,syn:"Soma Yukihira enfrenta batalhas culinárias intensas na elite escola Totsuki enquanto descobre os segredos da alta gastronomia.",score:8.2,votes:2678,genres:["Comédia","Drama","Escola"],eps:24,trailer:"https://www.youtube.com/embed/oQWS20ClOZ8",trending:false,year:2015,dub:"Legendado"},
+{id:23,name:"Tokyo Ghoul",img:"https://cdn.myanimelist.net/images/anime/5/64449.jpg",syn:"Kaneki Ken se torna meio-ghoul e precisa lidar com sua nova identidade num mundo sombrio de criaturas que se alimentam de humanos.",score:7.9,votes:4203,genres:["Ação","Horror","Sobrenatural"],eps:12,trailer:"https://www.youtube.com/embed/vGuQeqvtBGE",trending:false,year:2014,dub:"Legendado"},
+{id:24,name:"Tokyo Revengers",img:"https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120120-jKmrMdkVRp3c.jpg",malId:42249,syn:"Takemichi Hanagaki descobre que pode viajar no tempo e decide salvar sua namorada das garras de uma perigosa gangue juvenil.",score:7.9,votes:2651,genres:["Ação","Drama","Ficção Científica"],eps:24,trailer:"https://www.youtube.com/embed/2Ny3YIZWQM0",trending:false,year:2021,dub:"Legendado"},
+{id:25,name:"Fire Force",img:"./assets/animes/fire-force.jpg",malId:38671,syn:"Shinra Kusakabe ingressa na Brigada de Combate ao Fogo para investigar a morte de sua família, combatendo humanos que se transformam em demônios de fogo.",score:7.8,votes:1987,genres:["Ação","Sobrenatural","Ficção Científica"],eps:24,trailer:"https://www.youtube.com/embed/jJ0qwXTQU30",trending:false,year:2019,dub:"Legendado"},
+{id:26,name:"Akame ga Kill",img:"https://cdn.myanimelist.net/images/anime/1429/95946.jpg",syn:"Tatsumi se junta ao Night Raid, um grupo de assassinos revolucionários que combate o governo corrupto usando armas místicas chamadas Teigu.",score:7.8,votes:2341,genres:["Ação","Fantasia","Drama"],eps:24,trailer:"https://www.youtube.com/embed/wqJMPdABLhQ",trending:false,year:2014,dub:"Legendado"},
+{id:27,name:"Wind Breaker",img:"./assets/animes/wind-breaker.webp",malId:54595,syn:"Haruka Sakura entra em uma escola famosa por seus lutadores de rua que protegem a cidade e descobre o verdadeiro significado de força.",score:8.0,votes:1823,genres:["Ação","Drama","Escola"],eps:13,trailer:"https://www.youtube.com/embed/k_CItzO4DkA",trending:true,year:2024,dub:"Legendado"},
+{id:28,name:"The Rising of the Shield Hero",img:"https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx99263-7lRqdYV6ZgMz.jpg",malId:37779,syn:"Naofumi é convocado para outro mundo como o Herói do Escudo, mas é traído e difamado, precisando provar sua força sozinho.",score:8.1,votes:2234,genres:["Ação","Fantasia","Aventura"],eps:25,trailer:"https://www.youtube.com/embed/IvGsAAJRAuU",trending:false,year:2019,dub:"Legendado"},
+{id:29,name:"Blue Period",img:"./assets/animes/blue-period.jpg",malId:48583,syn:"Yatora Yaguchi descobre a arte e decide se tornar artista, preparando-se frenéticamente para o vestibular da mais difícil escola de arte do Japão.",score:8.0,votes:1567,genres:["Drama","Escola","Arte"],eps:12,trailer:"https://www.youtube.com/embed/EsHl14K7nZg",trending:false,year:2021,dub:"Legendado"},
+{id:30,name:"Mash: Magic and Muscles",img:"./assets/animes/mashle.webp",malId:52196,syn:"Mash Burnedead não possui magia num mundo onde ela é fundamental. Com força física sobre-humana, entra numa escola de magia para proteger seu pai.",score:7.7,votes:1456,genres:["Ação","Comédia","Fantasia"],eps:12,trailer:"https://www.youtube.com/embed/1kXDvVeBoGo",trending:false,year:2023,dub:"Legendado"}
+];
+
+
+// ════════════════════════════ SEGURANÇA ════════════════════════════
+// Escapa caracteres HTML perigosos para prevenir XSS
+const escH=(s)=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;').replace(/\//g,'&#x2F;');
+// Sanitiza texto de input do usuário (remove tags, normaliza)
+const sanitize=(s)=>escH(String(s).trim().slice(0,1000));
+
+// ════════════════════════════ HELPERS ════════════════════════════
+const ranked=(list)=>[...list].sort((a,b)=>{
+  const sA=a.score*0.7+(a.votes/1000)*0.3;
+  const sB=b.score*0.7+(b.votes/1000)*0.3;
+  return sB-sA;
+});
+const fmt=(n)=>n>=1000?(n/1000).toFixed(1).replace('.0','')+'k':String(n);
+const relTime=(iso)=>{
+  const d=Math.floor((Date.now()-new Date(iso))/1000);
+  if(d<60)return'agora';if(d<3600)return`${~~(d/60)}min`;
+  if(d<86400)return`${~~(d/3600)}h`;return new Date(iso).toLocaleDateString('pt-BR');
+};
+const placeholder=(name)=>{
+  const palettes=[['1a1a2e','e8ff00'],['16213e','00d4ff'],['0f3460','ff2d55'],['1b1b2e','ffc642']];
+  const [bg,fg]=palettes[name.charCodeAt(0)%palettes.length];
+  const init=name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+  return`https://placehold.co/200x280/${bg}/${fg}?text=${encodeURIComponent(init)}`;
+};
+
+
+
+
+// ════════════════════ IMAGE LOADER (AniList API) ════════════════════════
+// Busca imagens oficiais via AniList GraphQL para os animes que precisam.
+// AniList CDN (s4.anilist.co) permite hotlinking sem restrição.
+// Executa em background e atualiza as imagens ao receber resposta.
+const ANILIST_MAP = {
+  18: 98659,   // Classroom of the Elite
+  21: 171018,  // Dan Da Dan
+  24: 120120,  // Tokyo Revengers
+  28: 99263,   // The Rising of the Shield Hero
+};
+
+async function loadAniListImages() {
+  const dbIds = Object.keys(ANILIST_MAP).map(Number);
+  const alIds = dbIds.map(id => ANILIST_MAP[id]);
+
+  const query = `query($ids:[Int]){Page(perPage:50){media(id_in:$ids,type:ANIME){id coverImage{extraLarge large}}}}`;
+
+  try {
+    const res = await fetch('https://graphql.anilist.co', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ query, variables: { ids: alIds } })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const mediaList = data?.data?.Page?.media || [];
+
+    // Criar mapa inverso alId -> dbId
+    const alToDb = {};
+    dbIds.forEach(dbId => { alToDb[ANILIST_MAP[dbId]] = dbId; });
+
+    mediaList.forEach(media => {
+      const imgUrl = media.coverImage?.extraLarge || media.coverImage?.large;
+      if (!imgUrl) return;
+
+      const dbId = alToDb[media.id];
+      if (!dbId) return;
+
+      // Atualizar no DB em memória
+      const anime = DB.find(a => a.id === dbId);
+      if (anime) anime.img = imgUrl;
+
+      // Atualizar todas as imgs renderizadas na página agora
+      document.querySelectorAll(`img[data-dbid="${dbId}"]`).forEach(el => {
+        el.src = imgUrl;
+        el.removeAttribute('data-dbid');
+      });
+    });
+  } catch (e) {
+    // Falha silenciosa — imagens hardcoded já estão como fallback
+  }
+}
+
+
+// ════════════════════ CARROSSEL — NAVEGAÇÃO COM SETAS ════════════════════
+// Quantidade de pixels a rolar por clique (largura de ~2.5 cards)
+const SCROLL_AMT = 320;
+
+/**
+ * Rola o carrossel identificado por rowId na direção dir (+1 direita, -1 esquerda).
+ * @param {string} rowId - ID do elemento .hscroll
+ * @param {number} dir   - Direção: +1 (→) ou -1 (←)
+ */
+function scrollCarousel(rowId, dir) {
+  const el = document.getElementById(rowId);
+  if (!el) return;
+  el.scrollBy({ left: dir * SCROLL_AMT, behavior: 'smooth' });
+}
+
+/**
+ * Atualiza visibilidade das setas de um carrossel.
+ * Esconde a seta esquerda se estiver no início, direita se no fim.
+ * @param {HTMLElement} row - Elemento .hscroll
+ */
+function updateArrows(row) {
+  const wrap = row.closest('.carousel-wrap');
+  if (!wrap) return;
+  const prev = wrap.querySelector('.carr-prev');
+  const next = wrap.querySelector('.carr-next');
+  const atStart = row.scrollLeft <= 8;
+  const atEnd   = row.scrollLeft + row.clientWidth >= row.scrollWidth - 8;
+  if (prev) prev.classList.toggle('hidden', atStart);
+  if (next) next.classList.toggle('hidden', atEnd);
+}
+
+/** Inicializa os listeners de seta e scroll para todos os carrosséis. */
+function initCarousels() {
+  // Listeners dos botões de seta
+  document.querySelectorAll('.carr-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rowId = btn.dataset.row;
+      const dir   = btn.classList.contains('carr-next') ? 1 : -1;
+      scrollCarousel(rowId, dir);
+    });
+  });
+
+  // Listener de scroll para atualizar visibilidade das setas
+  document.querySelectorAll('.hscroll').forEach(row => {
+    row.addEventListener('scroll', () => updateArrows(row), { passive: true });
+    // Estado inicial
+    updateArrows(row);
+  });
+}
+
+// ════════════════════════════ STORAGE ════════════════════════════
+const LS={
+  g:(k)=>JSON.parse(localStorage.getItem('ar_'+k)||'null'),
+  s:(k,v)=>localStorage.setItem('ar_'+k,JSON.stringify(v)),
+  favs:()=>LS.g('favs')||[],
+  mylist:()=>LS.g('mylist')||[],
+  ratings:()=>LS.g('ratings')||{},
+  comments:(id)=>LS.g('c_'+id)||[],
+  isFav:(id)=>LS.favs().includes(id),
+  inList:(id)=>LS.mylist().includes(id),
+  addFav(id){const f=LS.favs();if(!f.includes(id)){f.push(id);LS.s('favs',f)}},
+  rmFav(id){LS.s('favs',LS.favs().filter(x=>x!==id))},
+  addList(id){const l=LS.mylist();if(!l.includes(id)){l.push(id);LS.s('mylist',l)}},
+  rmList(id){LS.s('mylist',LS.mylist().filter(x=>x!==id))},
+  rating:(id)=>((LS.ratings())[id]||0),
+  setRating(id,v){const r=LS.ratings();r[id]=v;LS.s('ratings',r)},
+  addComment(id,text){
+    const c=LS.comments(id);
+    c.unshift({id:Date.now(),user:'Você',text,date:new Date().toISOString()});
+    LS.s('c_'+id,c);return c;
+  }
+};
+
+// ════════════════════════════ STATE ════════════════════════════
+let S={page:'home',search:'',genre:'',minScore:0,order:'rank'};
+let debT;
+
+// ════════════════════════════ INIT ════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  buildGenreOpts();
+  renderHome();
+  updateFavBadge();
+  loadAniListImages();
+  initCarousels();
+});
+
+// ════════════════════════════ NAV ════════════════════════════
+function go(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.ntab[data-p]').forEach(el=>el.classList.remove('on'));
+  const pg=document.getElementById('page-'+p);
+  if(pg)pg.classList.add('on');
+  document.querySelectorAll(`.ntab[data-p="${p}"]`).forEach(el=>el.classList.add('on'));
+  S.page=p;
+  closeMob();
+  if(p==='ranking')renderRanking();
+  if(p==='favs')renderFavs();
+  if(p==='mylist')renderMyList();
+}
+function toggleMob(){document.getElementById('mobnav').classList.toggle('open')}
+function closeMob(){document.getElementById('mobnav').classList.remove('open')}
+
+// ════════════════════════════ HOME ════════════════════════════
+function renderHome(){
+  const tv=DB.reduce((s,a)=>s+a.votes,0);
+  const avg=(DB.reduce((s,a)=>s+a.score,0)/DB.length).toFixed(1);
+  document.getElementById('hs-v').textContent=fmt(tv);
+  document.getElementById('hs-a').textContent=avg;
+
+  // podium
+  const top3=ranked(DB).slice(0,3);
+  const t3el=document.getElementById('hero-top3');
+  [[top3[1],'#2'],[top3[0],'#1'],[top3[2],'#3']].forEach(([a,lbl])=>{
+    const d=document.createElement('div');
+    d.className='h3card';d.onclick=()=>openModal(a.id);
+    d.innerHTML=`<img src="${a.img}" alt="${a.name}" ${a.malId?'data-mal="'+a.malId+'"':''} onerror="this.src='${placeholder(a.name)}'"><div class="h3label">${lbl} ${escH(a.name.slice(0,12))}</div>`;
+    t3el.appendChild(d);
+  });
+
+  renderHRow('row-trend',DB.filter(a=>a.trending));
+  renderHRow('row-pop',[...DB].sort((a,b)=>b.votes-a.votes).slice(0,12));
+  renderHRow('row-top',[...DB].sort((a,b)=>b.score-a.score).slice(0,12));
+}
+
+function renderHRow(id,list){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML='';
+  list.forEach(a=>{
+    const c=document.createElement('div');c.className='hcard';c.onclick=()=>openModal(a.id);
+    const dubBadge=a.dub?`<div class="dub-badge ${a.dub==='Dublado'?'dub':'leg'}">${a.dub}</div>`:'';
+    c.innerHTML=`<img src="${a.img}" alt="${a.name}" loading="lazy" ${a.malId?'data-dbid="'+a.id+'"':''} onerror="this.src='${placeholder(a.name)}'"><div class="hcard-name">${escH(a.name)}</div><div class="hcard-score">★ ${a.score.toFixed(1)}</div>${dubBadge}`;
+    el.appendChild(c);
+  });
+  // Atualizar visibilidade das setas após renderizar conteúdo
+  updateArrows(el);
+}
+
+// ════════════════════════════ RANKING ════════════════════════════
+function buildGenreOpts(){
+  const gs=[...new Set(DB.flatMap(a=>a.genres))].sort();
+  const sel=document.getElementById('fg');
+  gs.forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;sel.appendChild(o)});
+}
+
+function getFiltered(){
+  if(S.search.trim()){
+    const q=S.search.toLowerCase();
+    return DB.filter(a=>a.name.toLowerCase().includes(q)||a.genres.some(g=>g.toLowerCase().includes(q)));
+  }
+  let list=[...DB];
+  if(S.genre)list=list.filter(a=>a.genres.includes(S.genre));
+  if(S.minScore)list=list.filter(a=>a.score>=S.minScore);
+  if(S.order==='rank')list=ranked(list);
+  else if(S.order==='score')list.sort((a,b)=>b.score-a.score);
+  else if(S.order==='votes')list.sort((a,b)=>b.votes-a.votes);
+  else if(S.order==='az')list.sort((a,b)=>a.name.localeCompare(b.name));
+  return list;
+}
+
+function renderRanking(){
+  const grid=document.getElementById('rank-grid');
+  grid.innerHTML=Array.from({length:6},()=>`<div class="sk-card"><div class="skb sk-pos"></div><div class="skb sk-img"></div><div class="sk-info"><div class="skb sk-l w80"></div><div class="skb sk-l w60"></div><div class="skb sk-l w40"></div></div></div>`).join('');
+  setTimeout(()=>{
+    const list=getFiltered();
+    grid.innerHTML='';
+    if(!list.length){
+      grid.innerHTML=`<div class="empty"><div class="ei">🔍</div><p>Nenhum anime encontrado</p><button onclick="clearF()">Limpar filtros</button></div>`;
+      return;
+    }
+    const rankMap=new Map(ranked(DB).map((a,i)=>[a.id,i+1]));
+    list.forEach((a,i)=>{
+      const pos=(S.order==='rank'&&!S.search)?i+1:rankMap.get(a.id);
+      const card=makeCard(a,pos);
+      card.style.animationDelay=`${Math.min(i*0.03,0.5)}s`;
+      grid.appendChild(card);
+    });
+  },180);
+}
+
+function makeCard(a,pos){
+  const fav=LS.isFav(a.id);
+  const fill=Math.round((a.score/10)*100);
+  const medal=pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':`#${pos}`;
+  const posClass=pos<=3?`p${pos}`:'';
+  const el=document.createElement('div');
+  el.className='acard';el.dataset.id=a.id;
+  el.innerHTML=`
+    <div class="acard-pos ${posClass}">${medal}</div>
+    <div class="acard-img-wrap">
+      <img class="acard-img" src="${a.img}" alt="${a.name}" loading="lazy" ${a.malId?'data-mal="'+a.malId+'"':''} onerror="this.src='${placeholder(a.name)}'">
+      <div class="acard-ov"><span class="btn-view">VER MAIS</span></div>
+    </div>
+    <div class="acard-body">
+      <div class="acard-name">${escH(a.name)}</div>
+      <div class="acard-row">
+        <span class="score-n">${a.score.toFixed(1)}</span>
+        <div class="score-bar"><div class="score-fill" style="width:${fill}%"></div></div>
+        <span class="score-v">${fmt(a.votes)}v</span>
+      </div>
+      <div class="acard-tags">${a.genres.slice(0,2).map(g=>`<span class="tag">${g}</span>`).join('')}</div>
+    </div>
+    <button class="btn-fav${fav?' on':''}" title="Favoritar">${fav?'❤️':'🤍'}</button>
+  `;
+  // Marcar imagem com data-dbid para o loader AniList poder atualizá-la
+  if(ANILIST_MAP[a.id]){const imgEl=el.querySelector('.acard-img');if(imgEl)imgEl.dataset.dbid=a.id;}
+  el.querySelector('.btn-fav').onclick=(e)=>{e.stopPropagation();toggleFav(a.id)};
+  el.onclick=(e)=>{if(!e.target.closest('.btn-fav'))openModal(a.id)};
+  return el;
+}
+
+function applyF(){
+  S.genre=document.getElementById('fg').value;
+  S.minScore=parseFloat(document.getElementById('fs').value)||0;
+  S.order=document.getElementById('fo').value;
+  S.search='';document.getElementById('si').value='';
+  renderRanking();
+}
+function clearF(){
+  S={...S,genre:'',minScore:0,order:'rank',search:''};
+  document.getElementById('fg').value='';
+  document.getElementById('fs').value='0';
+  document.getElementById('fo').value='rank';
+  document.getElementById('si').value='';
+  renderRanking();
+}
+function onSearch(v){
+  S.search=v;
+  clearTimeout(debT);
+  debT=setTimeout(()=>{if(S.page!=='ranking')go('ranking');else renderRanking();},280);
+}
+
+// ════════════════════════════ MODAL ════════════════════════════
+function openModal(id){
+  const a=DB.find(x=>x.id===id);if(!a)return;
+  document.getElementById('mb').innerHTML=buildModalHTML(a);
+  document.getElementById('ov').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('ov').classList.remove('on');
+  document.body.style.overflow='';
+}
+function closeOv(e){if(e.target===document.getElementById('ov'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+function buildModalHTML(a){
+  const fav=LS.isFav(a.id),inList=LS.inList(a.id),rating=LS.rating(a.id);
+  const recs=DB.filter(x=>x.id!==a.id&&x.genres.some(g=>a.genres.includes(g))).sort((x,y)=>y.score-x.score).slice(0,4);
+  const comments=LS.comments(a.id);
+  return`
+  <div class="m-hero">
+    <img class="m-poster" src="${a.img}" alt="${a.name}" ${a.malId?'data-mal="'+a.malId+'"':''} onerror="this.src='${placeholder(a.name)}'">
+    <div class="m-info">
+      <div class="m-badges">
+        ${a.trending?'<span class="m-badge tr">🔥 TRENDING</span>':''}
+        <span class="m-badge">${a.year}</span>
+        <span class="m-badge">${a.eps} eps</span>
+      </div>
+      <div class="m-title">${escH(a.name)}</div>
+      <div class="m-genres">${a.genres.map(g=>`<span class="tag">${g}</span>`).join('')}</div>
+      <div class="m-stats">
+        <div class="m-stat"><span class="val">${a.score.toFixed(1)}</span><span class="lbl">Nota</span></div>
+        <div class="m-sep"></div>
+        <div class="m-stat"><span class="val">${fmt(a.votes)}</span><span class="lbl">Votos</span></div>
+      </div>
+      <p class="m-syn">${escH(a.syn)}</p>
+      <div class="m-actions">
+        <button id="bf" class="btn-s${fav?' on':''}" onclick="toggleFavModal(${a.id})">${fav?'❤️ Favoritado':'🤍 Favoritar'}</button>
+        <button id="bl" class="btn-s${inList?' on-y':''}" onclick="toggleListModal(${a.id})">${inList?'✓ Na Lista':'+ Minha Lista'}</button>
+      </div>
+    </div>
+  </div>
+  ${a.trailer?`<div class="m-sec"><div class="m-sec-t">▶ TRAILER</div><div class="trailer-box"><iframe src="${a.trailer}?rel=0&amp;modestbranding=1" allowfullscreen loading="lazy" referrerpolicy="strict-origin" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe></div></div>`:''}
+  <div class="m-sec">
+    <div class="m-sec-t">★ AVALIAÇÃO</div>
+    <div class="rating-wrap">
+      <div class="stars" id="stars-${a.id}">${Array.from({length:10},(_,i)=>`<span class="star${i<rating?' lit':''}" onclick="doRate(${a.id},${i+1})" onmouseenter="hvStars(${a.id},${i+1})" onmouseleave="unStars(${a.id})">★</span>`).join('')}</div>
+      <div class="rate-lbl" id="rl-${a.id}">${rating?`Sua nota: ${rating}/10`:'Passe o mouse para avaliar'}</div>
+    </div>
+  </div>
+  ${recs.length?`<div class="m-sec"><div class="m-sec-t">↗ RECOMENDAÇÕES</div><div class="recs">${recs.map(r=>`<div class="rec" onclick="openModal(${r.id})"><img src="${r.img}" alt="${r.name}" loading="lazy" ${r.malId?'data-mal="'+r.malId+'"':''} onerror="this.src='${placeholder(r.name)}'"><p>${escH(r.name)}</p><span>★${r.score.toFixed(1)}</span></div>`).join('')}</div></div>`:''}
+  <div class="m-sec">
+    <div class="m-sec-t">💬 COMENTÁRIOS (${comments.length})</div>
+    <div class="cform">
+      <textarea id="ct-${a.id}" placeholder="Escreva sua opinião…"></textarea>
+      <button onclick="submitC(${a.id})">Publicar</button>
+    </div>
+    <div class="clist" id="cl-${a.id}">${renderComments(comments)}</div>
+  </div>`;
+}
+
+function renderComments(list){
+  if(!list.length)return`<div class="no-c">Seja o primeiro a comentar!</div>`;
+  return list.map(c=>`<div class="ci"><div class="c-av">${c.user[0].toUpperCase()}</div><div><div class="c-h"><strong>${escH(c.user)}</strong><time>${relTime(c.date)}</time></div><div class="c-t">${escH(c.text)}</div></div></div>`).join('');
+}
+
+// ════════════════════════════ RATING ════════════════════════════
+function hvStars(id,n){document.querySelectorAll(`#stars-${id} .star`).forEach((s,i)=>{s.classList.toggle('hov',i<n)})}
+function unStars(id){const r=LS.rating(id);document.querySelectorAll(`#stars-${id} .star`).forEach((s,i)=>{s.classList.remove('hov');s.classList.toggle('lit',i<r)})}
+function doRate(id,n){
+  if(LS.rating(id)){toast('Você já avaliou este anime!','warn');return;}
+  LS.setRating(id,n);
+  const a=DB.find(x=>x.id===id);
+  if(a){a.score=parseFloat(((a.score*a.votes+n)/(a.votes+1)).toFixed(2));a.votes++;}
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i)=>s.classList.toggle('lit',i<n));
+  document.getElementById(`rl-${id}`).textContent=`Sua nota: ${n}/10 ✓`;
+  toast(`${a?.name} avaliado: ${n}/10!`,'ok');
+  if(S.page==='ranking')renderRanking();
+}
+
+// ════════════════════════════ FAVS ════════════════════════════
+function toggleFav(id){
+  const a=DB.find(x=>x.id===id);
+  if(LS.isFav(id)){LS.rmFav(id);toast(`${a?.name} removido dos favoritos`,'info');}
+  else{LS.addFav(id);toast(`${a?.name} adicionado aos favoritos! ❤️`,'ok');}
+  updateFavBadge();
+  const btn=document.querySelector(`.acard[data-id="${id}"] .btn-fav`);
+  if(btn){const on=LS.isFav(id);btn.classList.toggle('on',on);btn.textContent=on?'❤️':'🤍';}
+}
+function toggleFavModal(id){
+  const a=DB.find(x=>x.id===id);const btn=document.getElementById('bf');
+  if(LS.isFav(id)){LS.rmFav(id);btn.classList.remove('on');btn.textContent='🤍 Favoritar';toast(`Removido dos favoritos`,'info');}
+  else{LS.addFav(id);btn.classList.add('on');btn.textContent='❤️ Favoritado';toast(`${a?.name} favoritado! ❤️`,'ok');}
+  updateFavBadge();
+}
+function updateFavBadge(){
+  const n=LS.favs().length,el=document.getElementById('fav-cnt');
+  if(el){el.textContent=n;el.style.display=n?'inline':'none';}
+}
+function renderFavs(){
+  const ids=LS.favs(),c=document.getElementById('favs-c');
+  if(!ids.length){c.innerHTML=`<div class="ep"><div class="ei">❤️</div><p>Nenhum favorito ainda</p><small>Clique no coração nos cards para favoritar</small></div>`;return;}
+  c.innerHTML='';
+  const g=document.createElement('div');g.className='fav-grid';
+  const rm=new Map(ranked(DB).map((a,i)=>[a.id,i+1]));
+  ids.forEach(id=>{const a=DB.find(x=>x.id===id);if(a)g.appendChild(makeCard(a,rm.get(a.id)));});
+  c.appendChild(g);
+}
+
+// ════════════════════════════ LIST ════════════════════════════
+function toggleListModal(id){
+  const a=DB.find(x=>x.id===id);const btn=document.getElementById('bl');
+  if(LS.inList(id)){LS.rmList(id);btn.classList.remove('on-y');btn.textContent='+ Minha Lista';toast(`Removido da lista`,'info');}
+  else{LS.addList(id);btn.classList.add('on-y');btn.textContent='✓ Na Lista';toast(`${a?.name} adicionado à lista!`,'ok');}
+}
+function renderMyList(){
+  const ids=LS.mylist(),c=document.getElementById('list-c');
+  c.innerHTML='';
+  if(!ids.length){c.innerHTML=`<div class="ep"><div class="ei">📋</div><p>Sua lista está vazia</p><small>Clique em "+ Minha Lista" nos detalhes de um anime</small></div>`;return;}
+  ids.forEach(id=>{
+    const a=DB.find(x=>x.id===id);if(!a)return;
+    const el=document.createElement('div');el.className='list-item';
+    el.innerHTML=`<img src="${a.img}" alt="${a.name}" onclick="openModal(${a.id})" ${a.malId?'data-mal="'+a.malId+'"':''} onerror="this.src='${placeholder(a.name)}'">
+    <div class="li-info"><strong>${escH(a.name)}</strong><span>★ ${a.score.toFixed(1)} · ${a.eps} eps · ${a.year}</span><div class="li-tags">${a.genres.slice(0,2).map(g=>`<span class="tag">${g}</span>`).join('')}</div></div>
+    <button class="btn-rm" onclick="rmList(${a.id})">✕</button>`;
+    c.appendChild(el);
+  });
+}
+function rmList(id){LS.rmList(id);renderMyList();toast('Removido da lista','info');}
+
+// ════════════════════════════ COMMENTS ════════════════════════════
+function submitC(id){
+  const ta=document.getElementById('ct-'+id);const text=sanitize(ta.value);
+  if(!text){toast('Escreva algo primeiro!','warn');return;}
+  const list=LS.addComment(id,text);ta.value='';
+  document.getElementById('cl-'+id).innerHTML=renderComments(list);
+  toast('Comentário publicado!','ok');
+}
+
+// ════════════════════════════ TOAST ════════════════════════════
+function toast(msg,type='info'){
+  const c=document.getElementById('toasts');
+  const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;
+  c.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),350)},3000);
+}
+</script>
+</body>
+</html>
